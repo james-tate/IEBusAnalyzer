@@ -1,4 +1,4 @@
-# IEBus analyzer using the Saleae Analyzer SDK Sample Analyzer
+# IEBus analyzer using the Saleae Analyzer SDK
 
 An IEBus analyzer for the digital side of an IEBus driver.
 [The NEC PD72042B protocol documentation](http://elinux.org/images/e/e1/UPD72042.pdf) was used in the formatting of the analyzer.
