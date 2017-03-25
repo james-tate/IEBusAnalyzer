@@ -1,0 +1,9 @@
+Debug/
+Release/
+*.VC.db
+*.VC.opendb
+*.suo
+*.sln.ecd
+debug/
+release/
+
