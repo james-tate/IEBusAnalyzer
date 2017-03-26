@@ -50,7 +50,7 @@ protected: //vars
 	U8 flags;
 
 	// let's make this so we don't have DRY
-	void update(S64 starting_sample, U64 &data1, U8 flags);
+	void update(S64 starting_sample, U64 &data1, U8 type, U8 flags);
 	// simple parity check :: returns 1 if even number of bits, returns 0 if odd number of bits
 	bool parity(U16 data);
 	void getAddress(bool master);

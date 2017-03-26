@@ -5,19 +5,7 @@
 #define CONTROL 100
 #define LENGTH  101
 #define DATA    102
-
-// this is the control bit functions
-// this likely needs to move to results
-#define READSLAVESTATUS 		0x0
-#define READANDLOCK 			0x3
-#define READLOCKLOWER    		0x4
-#define READLOCKUPPER 			0x5
-#define READANDUNLOCK 			0x6
-#define READDATA 				0x7
-#define WRITEANDLOCKCOMMAND 	0xA
-#define WRITEANDLOCKDATA 		0xB
-#define WRITEANDLOCKCOMMAND 	0xE
-#define WRITEDATA 				0xF
+#define HEADER  103
 
 IEBusAnalyzer::IEBusAnalyzer()
 :	Analyzer(),  
@@ -34,10 +22,11 @@ IEBusAnalyzer::~IEBusAnalyzer()
 	KillThread();
 }
 
-void IEBusAnalyzer::update(S64 starting_sample, U64 &data1, U8 flags)
+void IEBusAnalyzer::update(S64 starting_sample, U64 &data1, U8 type, U8 flags)
 {
 	Frame f;
 	f.mData1 = U32(data1);
+	f.mData2 = type;
 	f.mFlags = flags;
 	f.mStartingSampleInclusive = starting_sample; 
 	f.mEndingSampleInclusive = mSerial->GetSampleNumber();
@@ -121,13 +110,13 @@ void IEBusAnalyzer::getAddress(bool master)
 		measure_width = (start_sample_number_finish - start_bit_number_start) * 2 * .001;
 		if( measure_width > ( mSettings->mBitWidth / 2 - tolerance_bit ) && measure_width < ( mSettings->mBitWidth / 2 + tolerance_bit ) ){
 			mResults->AddMarker( mSerial->GetSampleNumber(), AnalyzerResults::One, mSettings->mInputChannel );
-			flags = flags | 2;
+			flags = 1 << 1;
 		}
 		else{
 			mResults->AddMarker( mSerial->GetSampleNumber(), AnalyzerResults::Zero, mSettings->mInputChannel );
 		}
 	}
-	update(start_sample_number_start, data , flags);
+	update(start_sample_number_start, data, master, flags);
 }
 
 int IEBusAnalyzer::getData(U8 dataType)
@@ -172,13 +161,13 @@ int IEBusAnalyzer::getData(U8 dataType)
 			measure_width = (start_sample_number_finish - start_bit_number_start) * 2 * .001;
 			if( measure_width > ( mSettings->mBitWidth / 2 - tolerance_bit ) && measure_width < ( mSettings->mBitWidth / 2 + tolerance_bit ) ){
 				mResults->AddMarker( mSerial->GetSampleNumber(), AnalyzerResults::One, mSettings->mInputChannel );
-				flags = 1;
+				//flags = 1;
 			}
 			else{
 				mResults->AddMarker( mSerial->GetSampleNumber(), AnalyzerResults::Zero, mSettings->mInputChannel );
-				flags = 0;
+				//flags = 0;
 			}
-			flags = flags & parity(data);
+			//flags = flags & parity(data);
 		}
 	}
 	// we should always expect a ACK
@@ -197,7 +186,7 @@ int IEBusAnalyzer::getData(U8 dataType)
 	}
 	// data gets reset in update, so save a copy for returning
 	U8 tempData = data;
-	update(start_sample_number_start, data, flags);
+	update(start_sample_number_start, data, dataType, flags);
 	return tempData;
 }
 
@@ -218,7 +207,6 @@ void IEBusAnalyzer::WorkerThread()
 		if( mSerial->GetBitState() == BIT_LOW )
 			mSerial->AdvanceToNextEdge();
 		data = 0;
-		flags = 0;
 		int length = 0 ;
 
 		// flag for starting bit
@@ -257,7 +245,7 @@ void IEBusAnalyzer::WorkerThread()
 				start_sample_number_start = mSerial->GetSampleNumber();
 			}
 		}
-		update(start_sample_number_start, data, 0);
+		update(start_sample_number_start, data, 0, 0);
 
 		// get the header
 		start_sample_number_start = mSerial->GetSampleNumber();
@@ -273,7 +261,7 @@ void IEBusAnalyzer::WorkerThread()
 			mResults->AddMarker( mSerial->GetSampleNumber(), AnalyzerResults::Zero, mSettings->mInputChannel );
 			data = 0;
 		}
-		update(start_sample_number_start, data, 0);
+		update(start_sample_number_start, data, HEADER, 0);
 
 		// get the master address
 		getAddress(true);
