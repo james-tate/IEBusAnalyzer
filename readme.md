@@ -20,12 +20,8 @@ For debug
 * save and restart Logic
 * choose the IEBusAnalyzer under Analyzers->Show more analyzers
 
-A prebuilt version of the analyzer is located in /prebuilt/
-
-TODO:
-	add example photos to readme before release
-	make the print function work in the decoded protocols section of the GUI work
-	handle parity and NAK errors (this will mainly be for GUI)
+![1](https://raw.githubusercontent.com/james-tate/IEBusAnalyzer/master/1.png)
+![2](https://raw.githubusercontent.com/james-tate/IEBusAnalyzer/master/2.png)
 
 ## Old Saleae Stuff
 
