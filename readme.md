@@ -20,8 +20,8 @@ For debug
 * save and restart Logic
 * choose the IEBusAnalyzer under Analyzers->Show more analyzers
 
-![1](https://raw.githubusercontent.com/james-tate/IEBusAnalyzer/master/1.png)
-![2](https://raw.githubusercontent.com/james-tate/IEBusAnalyzer/master/2.png)
+![1](https://raw.githubusercontent.com/james-tate/IEBusAnalyzer/master/demo1.png)
+![2](https://raw.githubusercontent.com/james-tate/IEBusAnalyzer/master/demo2.png)
 
 ## Old Saleae Stuff
 
