@@ -5,7 +5,9 @@
 #include "IEBusAnalyzerResults.h"
 #include "IEBusSimulationDataGenerator.h"
 
-class IEBusAnalyzerSettings;
+#define PARITY_ERROR 	1 << 0
+#define NAK				1 << 1
+
 class ANALYZER_EXPORT IEBusAnalyzer : public Analyzer
 {
 public:
@@ -18,13 +20,12 @@ public:
 
 	virtual const char* GetAnalyzerName() const;
 	virtual bool NeedsRerun();
-
 protected: //vars
-	std::unique_ptr< IEBusAnalyzerSettings > mSettings;
-	std::unique_ptr< IEBusAnalyzerResults > mResults;
+	IEBusAnalyzerSettings * mSettings;
+	IEBusAnalyzerResults * mResults;
 	AnalyzerChannelData* mSerial;
 
-	IEBusSimulationDataGenerator mSimulationDataGenerator;
+	IEBusSimulationDataGenerator * mSimulationDataGenerator;
 	bool mSimulationInitilized;
 
 	//Serial analysis vars:
@@ -32,8 +33,9 @@ protected: //vars
 	U32 mStartOfStopBitOffset;
 	U32 mEndOfStopBitOffset;
 	// tolerance for instability of readings
-	double tolerance_start;
-	double tolerance_bit;
+	U32 tolerance_start;
+	U32 tolerance_bit;
+	U32 zero_bit_len;
 	// measure width for each bit.
 	U64 measure_width;
 	// to hold the start of the start bit
@@ -52,8 +54,8 @@ protected: //vars
 	// let's make this so we don't have DRY
 	void update(S64 starting_sample, U64 &data1, U8 type, U8 flags);
 	// simple parity check :: returns 1 if even number of bits, returns 0 if odd number of bits
-	bool parity(U16 data);
-	void getAddress(bool master);
+	U8 parity(U16 data);
+	bool getAddress(bool master);
 	int getData(U8 dataType);
 };
 

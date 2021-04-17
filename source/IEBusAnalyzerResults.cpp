@@ -5,8 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-#define PARITY_ERROR 	1 << 0
-#define NAK				1 << 1
+
 
 #define CONTROL 100
 #define LENGTH  101
@@ -23,7 +22,7 @@
 #define READDATA 				0x7
 #define WRITEANDLOCKCOMMAND 	0xA
 #define WRITEANDLOCKDATA 		0xB
-#define WRITEANDLOCKCOMMAND 	0xE
+//#define WRITEANDLOCKCOMMAND 	0xE
 #define WRITEDATA 				0xF
 
 IEBusAnalyzerResults::IEBusAnalyzerResults( IEBusAnalyzer* analyzer, IEBusAnalyzerSettings* settings )

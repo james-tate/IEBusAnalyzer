@@ -4,28 +4,31 @@
 
 IEBusAnalyzerSettings::IEBusAnalyzerSettings()
 :	mInputChannel( UNDEFINED_CHANNEL ),
-	mStartBitWidth( 1700 ),
+	mStartBitWidth( 170 ),
 	mBitWidth( 40 )
 {
-	mInputChannelInterface.reset( new AnalyzerSettingInterfaceChannel() );
-	mInputChannelInterface->SetTitleAndTooltip( "Receive Channel", "Slave Receive Channel" );
-	mInputChannelInterface->SetChannel( mInputChannel );
+	mInputChannelInterface = new std::unique_ptr< AnalyzerSettingInterfaceChannel >();
+	mStartBitWidthInterface = new std::unique_ptr< AnalyzerSettingInterfaceInteger >();
+	mBitWidthInterface = new std::unique_ptr< AnalyzerSettingInterfaceInteger >();
+	mInputChannelInterface->reset( new AnalyzerSettingInterfaceChannel() );
+	(*mInputChannelInterface)->SetTitleAndTooltip( "Receive Channel", "Slave Receive Channel" );
+	(*mInputChannelInterface)->SetChannel( mInputChannel );
 
-	mStartBitWidthInterface.reset( new AnalyzerSettingInterfaceInteger() );
-	mStartBitWidthInterface->SetTitleAndTooltip( "Start Bit Width (uS)",  "Specify the start bit width in uS" );
-	mStartBitWidthInterface->SetMax( 6000000 );
-	mStartBitWidthInterface->SetMin( 1 );
-	mStartBitWidthInterface->SetInteger( mStartBitWidth );
+	mStartBitWidthInterface->reset( new AnalyzerSettingInterfaceInteger() );
+	(*mStartBitWidthInterface)->SetTitleAndTooltip( "Start Bit Width (uS)",  "Specify the start bit width in uS" );
+	(*mStartBitWidthInterface)->SetMax( 6000000 );
+	(*mStartBitWidthInterface)->SetMin( 1 );
+	(*mStartBitWidthInterface)->SetInteger( mStartBitWidth );
 
-	mBitWidthInterface.reset( new AnalyzerSettingInterfaceInteger() );
-	mBitWidthInterface->SetTitleAndTooltip( "Start Bit Width (uS)",  "Specify the bit width in uS" );
-	mBitWidthInterface->SetMax( 6000000 );
-	mBitWidthInterface->SetMin( 1 );
-	mBitWidthInterface->SetInteger( mBitWidth );
+	mBitWidthInterface->reset( new AnalyzerSettingInterfaceInteger() );
+	(*mBitWidthInterface)->SetTitleAndTooltip( "Bit Width (uS)",  "Specify the bit width in uS" );
+	(*mBitWidthInterface)->SetMax( 6000000 );
+	(*mBitWidthInterface)->SetMin( 1 );
+	(*mBitWidthInterface)->SetInteger( mBitWidth );
 
-	AddInterface( mInputChannelInterface.get() );
-	AddInterface( mStartBitWidthInterface.get() );
-	AddInterface( mBitWidthInterface.get() );
+	AddInterface( mInputChannelInterface->get() );
+	AddInterface( mStartBitWidthInterface->get() );
+	AddInterface( mBitWidthInterface->get() );
 
 	AddExportOption( 0, "Export as text/csv file" );
 	AddExportExtension( 0, "text", "txt" );
@@ -41,9 +44,9 @@ IEBusAnalyzerSettings::~IEBusAnalyzerSettings()
 
 bool IEBusAnalyzerSettings::SetSettingsFromInterfaces()
 {
-	mInputChannel = mInputChannelInterface->GetChannel();
-	mStartBitWidth = mStartBitWidthInterface->GetInteger();
-	mBitWidth = mBitWidthInterface->GetInteger();
+	mInputChannel = (*mInputChannelInterface)->GetChannel();
+	mStartBitWidth = (*mStartBitWidthInterface)->GetInteger();
+	mBitWidth = (*mBitWidthInterface)->GetInteger();
 
 	ClearChannels();
 	AddChannel( mInputChannel, "IEbus", true );
@@ -53,9 +56,9 @@ bool IEBusAnalyzerSettings::SetSettingsFromInterfaces()
 
 void IEBusAnalyzerSettings::UpdateInterfacesFromSettings()
 {
-	mInputChannelInterface->SetChannel( mInputChannel );
-	mStartBitWidthInterface->SetInteger( mStartBitWidth );
-	mBitWidth = mBitWidthInterface->GetInteger();
+	(*mInputChannelInterface)->SetChannel( mInputChannel );
+	(*mStartBitWidthInterface)->SetInteger( mStartBitWidth );
+	mBitWidth = (*mBitWidthInterface)->GetInteger();
 }
 
 void IEBusAnalyzerSettings::LoadSettings( const char* settings )

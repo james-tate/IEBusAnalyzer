@@ -21,9 +21,9 @@ public:
 	U32 mBitWidth;
 
 protected:
-	std::unique_ptr< AnalyzerSettingInterfaceChannel >	mInputChannelInterface;
-	std::unique_ptr< AnalyzerSettingInterfaceInteger >	mStartBitWidthInterface;
-	std::unique_ptr< AnalyzerSettingInterfaceInteger >	mBitWidthInterface;
+	std::unique_ptr< AnalyzerSettingInterfaceChannel > *mInputChannelInterface;
+	std::unique_ptr< AnalyzerSettingInterfaceInteger > *mStartBitWidthInterface;
+	std::unique_ptr< AnalyzerSettingInterfaceInteger > *mBitWidthInterface;
 
 };
 
