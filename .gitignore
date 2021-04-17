@@ -6,4 +6,5 @@ Release/
 *.sln.ecd
 debug/
 release/
+.vs/
 
